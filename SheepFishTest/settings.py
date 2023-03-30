@@ -11,10 +11,16 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+print("DJANGO_DB_NAME:", os.environ.get("POSTGRES_DB"))
+print("DJANGO_DB_USER:", os.environ.get("POSTGRES_USER"))
+print("DJANGO_DB_PASSWORD:", os.environ.get("POSTGRES_PASSWORD"))
+print("DJANGO_DB_HOST:", os.environ.get("POSTGRES_HOST"))
+print("DJANGO_DB_PORT:", os.environ.get("POSTGRES_PORT"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -37,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'checks',
+    'printer'
 ]
 
 MIDDLEWARE = [
@@ -85,6 +93,15 @@ DATABASES = {
     }
 }
 
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://localhost:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
