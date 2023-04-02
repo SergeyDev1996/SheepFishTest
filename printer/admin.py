@@ -1,3 +1,8 @@
 from django.contrib import admin
 
-# Register your models here.
+from printer.models import Printer
+
+
+@admin.register(Printer)
+class PrinterAdmin(admin.ModelAdmin):
+    pass
