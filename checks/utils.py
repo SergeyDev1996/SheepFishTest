@@ -4,16 +4,20 @@ import os
 
 from django.conf import settings
 import requests
+from django.template.loader import get_template
 
 from checks.models import Check
 
 
 def generate_pdf_receipt(check_id: int) -> None:
     check = Check.objects.get(id=check_id)
-    url = "http://wkhtmltopdf:80/"
-    with open("templates/check.html", "rb") as f:
-        file_contents = f.read()
-    encoded_contents = base64.b64encode(file_contents).decode("utf-8")
+    url = f"http://{os.environ.get('HTMLTOPDFHOST')}:" \
+          f"{os.environ.get('HTMLTOPDFPORT')}/"
+    context = {"check_type": check.type,
+               "check_id": check.id}
+    template = get_template("check.html")
+    html = template.render(context=context)
+    encoded_contents = base64.b64encode(html.encode("utf-8")).decode("utf-8")
     data = {
         "contents": encoded_contents,
     }
@@ -30,8 +34,4 @@ def generate_pdf_receipt(check_id: int) -> None:
             f.write(response.content)
         check.pdf_file = os.path.join("pdf", f"{order_id}_{check.type}.pdf")
         check.status = Check.CheckStatusChoices.RENDERED
-        print(f"Updating check {check.id} status to RENDERED")  # Add this line to debug
         check.save()
-        print(f"Check {check.id} status updated to RENDERED")  # Add this line to debug
-    else:
-        print(f"PDF generation failed for check {check.id} with status code {response.status_code}")  # Add this line to debug

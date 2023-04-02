@@ -1,0 +1,48 @@
+swagger: "2.0"
+info:
+  version: 1.0.0
+  title: SheepFish Test
+  description: The test task for the SheepFish
+basePath: /api
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /check-generate:
+    post:
+      description: |
+        Create checks for all the printers for the specified point_id
+      operationId: Create checks
+      parameters:
+        - name: type
+          in: body
+          description: The type of check
+          required: True
+          type: string
+        - name: point_id
+          in: body
+          description: The point id
+          required: True
+          type: integer
+      responses:
+        "400":
+          description: bad request
+        "201":
+          description: check created
+  /print-check:
+    post:
+      description: Returns all the new checks for the printer with the specified API Key as the zip attachment.
+      parameters:
+        - name: api_key
+          in: body
+          description: Api key of the printer
+          required: true
+          type: string
+      responses:
+        "400":
+          description: Bad Response
+        "200":
+          description: Returns attachment

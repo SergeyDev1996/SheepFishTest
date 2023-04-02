@@ -1,9 +1,7 @@
 from rest_framework import serializers
 
-from checks.models import Check
 
-
-class CheckCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Check
-        fields = "__all__"
+class CheckSerializer(serializers.Serializer):
+    point_id = serializers.IntegerField(required=True)
+    order = serializers.JSONField(required=True)
+    type = serializers.CharField(max_length=50, required=True)
