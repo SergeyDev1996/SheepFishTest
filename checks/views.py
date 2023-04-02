@@ -9,8 +9,8 @@ from rest_framework.views import APIView
 
 from checks.models import Check
 from checks.serializers import CheckCreateSerializer
-from checks.utils import generate_pdf_receipt
 from printer.models import Printer
+from .tasks import generate_pdf_receipt_task
 
 
 class GenerateChecksView(CreateAPIView):
@@ -27,7 +27,6 @@ class GenerateChecksView(CreateAPIView):
         # check_exist = Check.objects.filter(order=order).first()
         # if check_exist:
         #     raise ValidationError("The check for this order already exists.")
-        tasks = []
         for printer in printers:
             check = Check(
                 printer_id=printer,
@@ -36,5 +35,5 @@ class GenerateChecksView(CreateAPIView):
                 status=Check.CheckStatusChoices.NEW
             )
             check.save()
-            generate_pdf_receipt(check.id)
+            generate_pdf_receipt_task.delay(check.id)
         return Response({"success": "Order created and PDF generation started"}, status=status.HTTP_201_CREATED)

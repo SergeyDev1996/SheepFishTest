@@ -12,7 +12,7 @@ from checks.models import Check
 
 def generate_pdf_receipt(check_id: int):
     check = Check.objects.get(id=check_id)
-    url = "http://localhost:80/"
+    url = "http://wkhtmltopdf:80/"
     with open("templates/check.html", "rb") as f:
         file_contents = f.read()
     encoded_contents = base64.b64encode(file_contents).decode("utf-8")

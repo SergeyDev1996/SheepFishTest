@@ -18,6 +18,44 @@ services:
     ports:
       - "80:80"
     image: openlabs/docker-wkhtmltopdf-aas
+  celery-worker:
+    build:
+      context: ../celery_worker
+    command: celery -A SheepFishTest worker -l INFO
+    restart: always
+    environment:
+      C_FORCE_ROOT: 1
+      POSTGRES_HOST: "postgres"  # Use the service name instead of "localhost"
+      POSTGRES_PORT: "5432"
+      CELERY_BROKER_URL: 'redis://redis:6379/0'
+      CELERY_RESULT_BACKEND: 'redis://redis:6379/0'
+      PYTHONPATH: "/app"
+    env_file:
+      - ../.env
+    volumes:
+      - ../:/app
+    depends_on:
+      - redis
+  celery-beat:
+    build:
+      context: ../celery_worker
+    command: celery -A SheepFishTest beat -l INFO
+    restart: always
+    environment:
+      C_FORCE_ROOT: 1
+      POSTGRES_HOST: "postgres"  # Use the service name instead of "localhost"
+      CELERY_BROKER_URL: 'redis://redis:6379/0'
+      CELERY_RESULT_BACKEND: 'redis://redis:6379/0'
+      PYTHONPATH: "/app"
+      POSTGRES_PORT: "5432"
+    env_file:
+      - ../.env
+    volumes:
+      - ../:/app
+    depends_on:
+      - redis
+
+
 
 volumes:
   postgres_data:

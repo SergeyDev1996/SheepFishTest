@@ -80,7 +80,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'SheepFishTest.wsgi.application'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, os.path.pardir, 'media/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
@@ -104,9 +104,8 @@ CACHES = {
         }
     }
 }
-
-CELERY_BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
