@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'celery',
+    'rest_framework',
     'checks',
     'printer'
 ]
@@ -78,7 +80,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'SheepFishTest.wsgi.application'
 
-
+MEDIA_ROOT = os.path.join(BASE_DIR, os.path.pardir, 'media/')
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
@@ -102,6 +104,9 @@ CACHES = {
         }
     }
 }
+
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
