@@ -1,6 +1,7 @@
 import io
 import os
 import zipfile
+from urllib.request import Request
 
 from django.conf import settings
 from django.http import FileResponse
@@ -19,7 +20,7 @@ from .tasks import generate_pdf_receipt_task
 class GenerateChecksView(CreateAPIView):
     serializer_class = CheckSerializer
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request: Request, *args, **kwargs) -> Response:
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         printers = Printer.objects.filter(point_id=serializer.data["point_id"])
@@ -46,7 +47,7 @@ class GenerateChecksView(CreateAPIView):
 
 class NewChecksView(APIView):
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request: Request, *args, **kwargs) -> FileResponse:
         api_key = request.data.get("api_key")
         if not api_key:
             raise ValidationError("Please specify the api_key")
